@@ -7,13 +7,6 @@ __pycache__/
 venv/
 env/
 
-# Notebooks (opcional, mas você já está salvando no Git - pode deixar, eu recomendo manter)
-# .ipynb_checkpoints/
-
-# Dados brutos grandes (se tiver mais de 100MB)
-# *.npy
-# *.keras
-
 # IDE
 .vscode/
 .idea/.DS_Store
