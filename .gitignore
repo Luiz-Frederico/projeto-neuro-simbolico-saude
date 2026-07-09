@@ -11,3 +11,12 @@ env/
 .vscode/
 .idea/.DS_Store
 .DS_Store
+Thumbs.db
+
+# Logs e dados temporários
+*.log
+*.tmp
+*.sqlite3
+
+# Streamlit (se gerar cache)
+.streamlit/
