@@ -1,5 +1,6 @@
 # Core
-tensorflow>=2.10.0
+tensorflow==2.15.0
+keras==3.0.0
 numpy>=1.24.0
 scikit-learn>=1.2.0
 matplotlib>=3.6.0
@@ -18,3 +19,10 @@ requests>=2.31.0
 
 # Utilitários
 python-dotenv>=1.0.0
+
+
+
+
+
+
+
