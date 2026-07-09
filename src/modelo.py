@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import os
 
-# Permite desserialização de modelos com Keras 3 (já incluso no TF 2.16+)
+# Isso é ESSENCIAL para carregar modelos salvos com Keras 3
 tf.keras.config.enable_unsafe_deserialization()
 
 MODEL_PATH = "models/modelo_saude_6classes_l2_1000ep_v2.keras"
