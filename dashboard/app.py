@@ -40,11 +40,11 @@ with col2:
 if st.button("Classificar", type="primary"):
     with st.spinner("Classificando..."):
         try:
-            # Chamada à API com endpoint corrigido e timeout aumentado
+            # Chamada à API com a rota correta (/v1/classificar) e timeout aumentado
             response = requests.post(
-                f"{API_URL}/classificar",   # CORRIGIDO: sem /v1/
+                f"{API_URL}/v1/classificar",   # <-- CORRIGIDO: /v1/classificar
                 json={"temperatura": temperatura, "bpm": bpm},
-                timeout=30                   # AUMENTADO para 30s (cold start)
+                timeout=30
             )
             
             if response.status_code == 200:
