@@ -12,9 +12,9 @@ st.set_page_config(page_title="Classificador Neuro-Simbólico", layout="wide")
 st.title("🧠 Classificador Neuro-Simbólico")
 st.markdown("### Temperatura + Frequência Cardíaca → Diagnóstico")
 
-# --- URL da API (configurável) ---
+# --- URL da API (configurável via secrets) ---
 # Para desenvolvimento local: http://localhost:8000
-# Para deploy: substituir pela URL pública da API
+# Para deploy: usar a URL pública da API definida no secrets
 API_URL = st.secrets.get("API_URL", "http://localhost:8000")
 
 # --- Entrada de dados ---
@@ -40,10 +40,11 @@ with col2:
 if st.button("Classificar", type="primary"):
     with st.spinner("Classificando..."):
         try:
+            # Chamada à API com endpoint corrigido e timeout aumentado
             response = requests.post(
-                f"{API_URL}/v1/classificar",
+                f"{API_URL}/classificar",   # CORRIGIDO: sem /v1/
                 json={"temperatura": temperatura, "bpm": bpm},
-                timeout=10
+                timeout=30                   # AUMENTADO para 30s (cold start)
             )
             
             if response.status_code == 200:
@@ -52,7 +53,7 @@ if st.button("Classificar", type="primary"):
                 confianca = resultado["confianca"]
                 probs = resultado["probabilidades"]
 
-                # Exibe diagnóstico
+                # Exibe diagnóstico com cor apropriada
                 if "Hiperpirexia" in diagnostico:
                     st.error(f"**Diagnóstico:** {diagnostico}")
                 else:
@@ -60,7 +61,7 @@ if st.button("Classificar", type="primary"):
                 
                 st.metric("Confiança", f"{confianca*100:.1f}%")
 
-                # Gráfico de barras
+                # Gráfico de barras com Plotly
                 classes = list(probs.keys())
                 valores = list(probs.values())
                 
@@ -80,25 +81,13 @@ if st.button("Classificar", type="primary"):
             else:
                 st.error(f"Erro na API: {response.status_code} - {response.text}")
 
+        except requests.exceptions.Timeout:
+            st.error("⏰ Tempo limite excedido. A API pode estar iniciando. Tente novamente em alguns instantes.")
         except requests.exceptions.ConnectionError:
-            st.error("❌ Não foi possível conectar à API. Certifique-se de que o servidor FastAPI está rodando.")
+            st.error("❌ Não foi possível conectar à API. Verifique se a URL está correta e se a API está ativa.")
         except Exception as e:
             st.error(f"Erro inesperado: {str(e)}")
 
-# --- Informações do projeto ---
-with st.expander("ℹ️ Sobre este projeto"):
-    st.markdown("""
-    Este dashboard consome uma API FastAPI que utiliza um modelo de IA neuro-simbólica.
-    
-    **Classes disponíveis:**
-    - Hipotermia (0)
-    - Saudável (1)
-    - Febril (2)
-    - Febre (3)
-    - Febre Alta (4)
-    - Risco Cardiovascular (5)
-    
-    **Abordagem:**
-    - Rede neural MLP para predição probabilística.
-    - Filtro simbólico baseado em regras clínicas para decisões seguras.
-    """)
+# --- Rodapé ---
+st.markdown("---")
+st.caption("Projeto desenvolvido como estudo de IA neuro-simbólica. Modelo treinado com dados reais e sintéticos.")
