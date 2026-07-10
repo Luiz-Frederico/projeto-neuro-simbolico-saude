@@ -1,9 +1,9 @@
-import tensorflow as tf
+import tf_keras as keras
 import numpy as np
 import os
 
-# Isso é ESSENCIAL para carregar modelos salvos com Keras 3
-tf.keras.config.enable_unsafe_deserialization()
+# Permite desserialização de modelos com Keras 3 (via tf_keras)
+keras.config.enable_unsafe_deserialization()
 
 MODEL_PATH = "models/modelo_saude_6classes_l2_1000ep_v2.keras"
 
@@ -14,7 +14,7 @@ def carregar_modelo():
     if _modelo is None:
         if not os.path.exists(MODEL_PATH):
             raise FileNotFoundError(f"Modelo não encontrado em {MODEL_PATH}")
-        _modelo = tf.keras.models.load_model(MODEL_PATH)
+        _modelo = keras.models.load_model(MODEL_PATH)
         print("✅ Modelo carregado com sucesso!")
     return _modelo
 

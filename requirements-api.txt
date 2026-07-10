@@ -1,5 +1,6 @@
 # Core (para a API)
 tensorflow==2.15.0
+tf_keras>=2.21.0
 numpy>=1.24.0
 scikit-learn>=1.2.0
 matplotlib>=3.6.0
