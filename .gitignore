@@ -19,4 +19,4 @@ Thumbs.db
 *.sqlite3
 
 # Streamlit (se gerar cache)
-.streamlit/Miniforge3-*.sh
+.streamlit/config.toml
