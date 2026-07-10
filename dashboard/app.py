@@ -38,13 +38,13 @@ with col2:
 
 # --- Botão de classificação ---
 if st.button("Classificar", type="primary"):
-    with st.spinner("Classificando..."):
+    with st.spinner("Acessando o modelo neuro-simbólico... (Se for a primeira requisição, a API pode levar até 1 minuto para acordar)"):
         try:
-            # Chamada à API com a rota correta (/v1/classificar) e timeout aumentado
+            # Chamada à API com timeout aumentado para cobrir o cold start do Render
             response = requests.post(
-                f"{API_URL}/v1/classificar",   # <-- CORRIGIDO: /v1/classificar
+                f"{API_URL}/v1/classificar",
                 json={"temperatura": temperatura, "bpm": bpm},
-                timeout=30
+                timeout=90 
             )
             
             if response.status_code == 200:
@@ -82,9 +82,9 @@ if st.button("Classificar", type="primary"):
                 st.error(f"Erro na API: {response.status_code} - {response.text}")
 
         except requests.exceptions.Timeout:
-            st.error("⏰ Tempo limite excedido. A API pode estar iniciando. Tente novamente em alguns instantes.")
+            st.error("⏰ **Tempo de espera esgotado (Timeout).** Como a API está hospedada em um plano gratuito no Render, o servidor entra em modo de repouso por inatividade. Ele já está acordando! Por favor, aguarde alguns segundos e clique em **Classificar** novamente.")
         except requests.exceptions.ConnectionError:
-            st.error("❌ Não foi possível conectar à API. Verifique se a URL está correta e se a API está ativa.")
+            st.error("❌ Não foi possível conectar à API. Verifique se a URL está correta nas Secrets do Streamlit e se a API está ativa no Render.")
         except Exception as e:
             st.error(f"Erro inesperado: {str(e)}")
 
