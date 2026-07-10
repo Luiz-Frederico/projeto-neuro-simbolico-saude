@@ -2,7 +2,8 @@ import keras
 import numpy as np
 import os
 
-MODEL_PATH = "models/modelo_saude_6classes_l2_1000ep_v2.keras"
+# Aponta para o novo arquivo convertido
+MODEL_PATH = "models/modelo_saude_6classes_l2_1000ep_v2.h5"
 
 _modelo = None
 
@@ -11,9 +12,9 @@ def carregar_modelo():
     if _modelo is None:
         if not os.path.exists(MODEL_PATH):
             raise FileNotFoundError(f"Modelo não encontrado em {MODEL_PATH}")
-        # Carrega nativamente usando o Keras 3 instalado
+        # Carrega o formato .h5 de forma estável
         _modelo = keras.models.load_model(MODEL_PATH)
-        print("✅ Modelo carregado com sucesso no Keras 3!")
+        print("✅ Modelo H5 carregado com sucesso!")
     return _modelo
 
 def predizer(temperatura, bpm):
