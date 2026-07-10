@@ -1,22 +1,6 @@
-
-import tf_keras as keras
+import keras
 import numpy as np
 import os
-
-# --- PATCH DE COMPATIBILIDADE (Keras 3 -> Keras 2) ---
-# Força o tf_keras a aceitar modelos gerados no Keras 3 contendo 'batch_shape' e 'optional'
-from tf_keras.layers import InputLayer
-_original_input_init = InputLayer.__init__
-
-def _patched_input_init(self, *args, **kwargs):
-    if 'batch_shape' in kwargs:
-        kwargs['batch_input_shape'] = kwargs.pop('batch_shape')
-    if 'optional' in kwargs:
-        kwargs.pop('optional')
-    _original_input_init(self, *args, **kwargs)
-
-InputLayer.__init__ = _patched_input_init
-# -----------------------------------------------------
 
 MODEL_PATH = "models/modelo_saude_6classes_l2_1000ep_v2.keras"
 
@@ -27,8 +11,9 @@ def carregar_modelo():
     if _modelo is None:
         if not os.path.exists(MODEL_PATH):
             raise FileNotFoundError(f"Modelo não encontrado em {MODEL_PATH}")
+        # Carrega nativamente usando o Keras 3 instalado
         _modelo = keras.models.load_model(MODEL_PATH)
-        print("✅ Modelo carregado com sucesso!")
+        print("✅ Modelo carregado com sucesso no Keras 3!")
     return _modelo
 
 def predizer(temperatura, bpm):
