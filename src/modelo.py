@@ -2,9 +2,6 @@ import tf_keras as keras
 import numpy as np
 import os
 
-# Permite desserialização de modelos com Keras 3 (via tf_keras)
-keras.config.enable_unsafe_deserialization()
-
 MODEL_PATH = "models/modelo_saude_6classes_l2_1000ep_v2.keras"
 
 _modelo = None
