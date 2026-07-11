@@ -281,7 +281,7 @@ if botao_inferencia:
                                 plot_bgcolor='rgba(0,0,0,0)',
                                 height=380
                             )
-                            st.plotly_chart(fig_radar, width='stretch')
+                            st.plotly_chart(fig_radar, use_container_width=True)
                         else:
                             st.warning("Dados de probabilidade insuficientes para gerar o gráfico radial.")
                     
@@ -304,7 +304,7 @@ if botao_inferencia:
                                 yaxis_range=[0, 1],
                                 height=380
                             )
-                            st.plotly_chart(fig_bar, width='stretch')
+                            st.plotly_chart(fig_bar, use_container_width=True)
                         else:
                             st.warning("Dados de classe insuficientes para gerar o gráfico de barras.")
                 else:
@@ -324,7 +324,7 @@ if st.session_state.historico:
     st.markdown("---")
     st.markdown("### 📋 Histórico de Análises Acumuladas nesta Sessão")
     df_hist = pd.DataFrame(st.session_state.historico)
-    st.dataframe(df_hist, width='stretch')
+    st.dataframe(df_hist, use_container_width=True)
 
 # --- RODAPÉ ---
 st.markdown("---")
