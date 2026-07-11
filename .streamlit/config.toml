@@ -1,0 +1,9 @@
+[theme]
+primaryColor = "#ff3b30"
+backgroundColor = "#0d0e15"
+secondaryBackgroundColor = "#1c1c1e"
+textColor = "#ffffff"
+font = "sans serif"
+
+[runner]
+magicEnabled = false

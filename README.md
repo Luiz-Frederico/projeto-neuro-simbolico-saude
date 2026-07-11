@@ -131,6 +131,8 @@ A organização de pastas do repositório segue os padrões recomendados de desi
 
 ```
 projeto-neuro-simbolico-saude/
+├── .streamlit/
+│   └── config.toml
 ├── api/
 │   ├── init.py
 │   └── main.py                     # Backend FastAPI - Endpoints de inferência e saúde

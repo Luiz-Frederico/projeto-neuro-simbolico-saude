@@ -18,5 +18,4 @@ Thumbs.db
 *.tmp
 *.sqlite3
 
-# Streamlit (se gerar cache)
-.streamlit/config.toml
+
