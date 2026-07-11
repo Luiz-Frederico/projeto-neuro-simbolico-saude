@@ -60,13 +60,13 @@ st.markdown("""
         border-radius: 4px !important;
     }
     
-    /* AJUSTE 1: Números digitados agora ficam em PRETO para leitura ideal no fundo cinza-claro do widget */
+    /* Números digitados em PRETO para leitura ideal no fundo cinza-claro */
     div[data-baseweb="input"] input {
         color: #000000 !important;
         font-weight: bold !important;
     }
     
-    /* AJUSTE 2: Customização dos botões + e - do step input para Verde Industrial ao focar/clicar */
+    /* Customização dos botões + e - do step input */
     div[data-testid="stNumberInputStepDown"], div[data-testid="stNumberInputStepUp"] {
         background-color: transparent !important;
     }
@@ -79,7 +79,7 @@ st.markdown("""
         color: #000000 !important;
     }
     
-    /* AJUSTE 3: Classes dedicadas para os rodapés brilharem no mesmo azul neon do título principal */
+    /* Classes dedicadas para os rodapés brilharem no azul neon */
     .neon-footer, .neon-footer p, .neon-caption, .neon-caption span {
         color: #00f2fe !important;
         text-shadow: 0 0 5px #00f2fe;
@@ -87,7 +87,7 @@ st.markdown("""
         font-family: monospace;
     }
     
-    /* Cards de Métricas Estilizados com fundo escuro para destacar o Neon */
+    /* Cards de Métricas Estilizados com fundo escuro */
     div[data-testid="stMetric"] {
         background-color: #1a1a1a !important;
         padding: 15px !important;
@@ -137,7 +137,6 @@ with st.sidebar:
     )
     
     st.markdown("### 🧠 ARQUITETURA DA IA")
-    # Camada Conexionista customizada com Azul Neon
     st.markdown(
         '<div style="background-color: rgba(0, 242, 254, 0.05); padding: 12px; border-radius: 5px; border: 2px solid #00f2fe; box-shadow: 0 0 10px #00f2fe; margin-bottom: 15px;">'
         '<span style="color: #00f2fe; font-weight: bold; font-family: monospace;"> Camada Conexionista:</span><br>'
@@ -146,7 +145,6 @@ with st.sidebar:
         unsafe_allow_html=True
     )
     
-    # Camada Simbólica em Lilás Neon
     st.markdown(
         '<div style="background-color: rgba(186, 85, 211, 0.08); padding: 12px; border-radius: 5px; border: 2px solid #bd00ff; box-shadow: 0 0 10px #bd00ff; margin-bottom: 15px;">'
         '<span style="color: #bd00ff; font-weight: bold; font-family: monospace;"> Camada Simbólica:</span><br>'
@@ -156,7 +154,6 @@ with st.sidebar:
     )
     
     st.markdown("---")
-    # AJUSTE 3: Aplicando a classe azul neon no rodapé da barra lateral
     st.markdown('<div class="neon-caption">FIAP • Inteligência Artificial & Machine Learning</div>', unsafe_allow_html=True)
 
 # --- 5. ÁREA PRINCIPAL ---
@@ -164,9 +161,9 @@ st.title("🧠 NEURO-SYMBOLIC MEDICAL INTERFACE")
 st.markdown("### Monitoramento e Diagnóstico por Inteligência Artificial")
 st.markdown("---")
 
-# Tratamento de segurança para API
+# Limpeza e higienização da string da URL base para evitar caminhos duplicados
 try:
-    API_URL = st.secrets["API_URL"]
+    API_URL = st.secrets["API_URL"].strip().rstrip("/")
 except Exception:
     API_URL = "https://classificador-neuro-simbolico-api.onrender.com"
 
@@ -195,113 +192,140 @@ with col_lottie:
 
 st.markdown("---")
 
-# --- 7. FLUXO DE EXECUÇÃO ---
+# --- 7. FLUXO DE EXECUÇÃO BLINDADO ---
 if botao_inferencia:
-    with st.spinner("Requisitando inferência ao cluster no Render..."):
+    with st.spinner("Estabelecendo conexão segura com o cluster no Render... (Pode levar até 40s caso o cluster esteja acordando)"):
         try:
             payload = {"temperatura": temperatura, "bpm": bpm}
-            response = requests.post(f"{API_URL}/v1/classificar", json=payload, timeout=65)
             
+            # Estratégia adaptativa de rotas para garantir compatibilidade com o backend
+            rotas_para_testar = [f"{API_URL}/predict", f"{API_URL}/v1/classificar", f"{API_URL}/classificar"]
+            response = None
+            erro_conexao = None
+            
+            for rota in rotas_para_testar:
+                try:
+                    response = requests.post(rota, json=payload, timeout=45)
+                    if response.status_code in [200, 422]:
+                        break
+                except requests.exceptions.RequestException as e:
+                    erro_conexao = e
+                    continue
+            
+            if response is None:
+                raise erro_conexao if erro_conexao else Exception("Incapaz de mapear rotas de destino.")
+
             if response.status_code == 200:
                 dados = response.json()
                 diagnostico = dados.get("diagnostico", "Não Identificado")
                 probs = dados.get("probabilidades", {})
                 
-                cor_alerta = "#00ff00"
-                if "Febre" in diagnostico or "Cardiovascular" in diagnostico:
-                    cor_alerta = "#ff3366"
-                elif "Febril" in diagnostico or "Hipotermia" in diagnostico:
-                    cor_alerta = "#ff9900"
-                
-                st.session_state.historico.insert(0, {
-                    "Horário": time.strftime("%H:%M:%S"),
-                    "Temperatura (°C)": f"{temperatura:.2f}",
-                    "BPM": bpm,
-                    "Diagnóstico Final": diagnostico
-                })
-                
-                st.markdown(f"### 📊 Resultado da Análise Coletada")
-                m1, m2, m3 = st.columns([1, 1, 2])
-                with m1:
-                    st.metric(label="Temperatura Lida", value=f"{temperatura:.2f} °C")
-                with m2:
-                    st.metric(label="Batimentos Cardíacos", value=f"{bpm} BPM")
-                with m3:
-                    st.markdown(
-                        f'<div style="background-color: #1a1a1a; padding: 18px; border-radius: 5px; border: 2px solid {cor_alerta}; box-shadow: 0 0 15px {cor_alerta}; text-align: center;">'
-                        f'<span style="color: {cor_alerta}; font-weight: bold; font-family: monospace; font-size: 20px;">DIAGNÓSTICO: {diagnostico.upper()}</span>'
-                        f'</div>', 
-                        unsafe_allow_html=True
-                    )
-                
-                st.markdown("")
-                
-                # GRÁFICOS LADO A LADO
-                g1, g2 = st.columns(2)
-                
-                with g1:
-                    st.markdown("#### 🕸️ Assinatura Visual (Gráfico de Radar)")
-                    categories = list(probs.keys())
-                    values = list(probs.values())
-                    categories.append(categories[0])
-                    values.append(values[0])
+                # Só monta a parte gráfica se as probabilidades existirem de fato
+                if probs and isinstance(probs, dict):
+                    cor_alerta = "#00ff00"
+                    if "Febre" in diagnostico or "Cardiovascular" in diagnostico:
+                        cor_alerta = "#ff3366"
+                    elif "Febril" in diagnostico or "Hipotermia" in diagnostico:
+                        cor_alerta = "#ff9900"
                     
-                    fig_radar = go.Figure()
-                    fig_radar.add_trace(go.Scatterpolar(
-                        r=values,
-                        theta=categories,
-                        fill='toself',
-                        fillcolor='rgba(0, 242, 254, 0.15)',
-                        line=dict(color='#00f2fe', width=2.5),
-                        name='Probabilidade'
-                    ))
-                    fig_radar.update_layout(
-                        polar=dict(
-                            radialaxis=dict(visible=True, range=[0, 1], gridcolor="rgba(255,255,255,0.15)"),
-                            angularaxis=dict(gridcolor="rgba(255,255,255,0.15)", linecolor="rgba(255,255,255,0.15)")
-                        ),
-                        template="plotly_dark",
-                        paper_bgcolor='rgba(0,0,0,0)',
-                        plot_bgcolor='rgba(0,0,0,0)',
-                        height=380
-                    )
-                    st.plotly_chart(fig_radar, use_container_width=True)
-                
-                with g2:
-                    st.markdown("#### 📊 Distribuição Linear (Gráfico de Barras)")
-                    classes_bar = list(probs.keys())
-                    valores_bar = list(probs.values())
+                    st.session_state.historico.insert(0, {
+                        "Horário": time.strftime("%H:%M:%S"),
+                        "Temperatura (°C)": f"{temperatura:.2f}",
+                        "BPM": bpm,
+                        "Diagnóstico Final": diagnostico
+                    })
                     
-                    fig_bar = go.Figure(data=[go.Bar(
-                        x=classes_bar, 
-                        y=valores_bar, 
-                        marker_color=['#00f2fe' if v == max(valores_bar) else '#343a40' for v in valores_bar],
-                        marker_line=dict(color='#4facfe', width=1.5)
-                    )])
-                    fig_bar.update_layout(
-                        template="plotly_dark",
-                        paper_bgcolor='rgba(0,0,0,0)',
-                        plot_bgcolor='rgba(0,0,0,0)',
-                        yaxis_range=[0, 1],
-                        height=380
-                    )
-                    st.plotly_chart(fig_bar, use_container_width=True)
+                    st.markdown(f"### 📊 Resultado da Análise Coletada")
+                    m1, m2, m3 = st.columns([1, 1, 2])
+                    with m1:
+                        st.metric(label="Temperatura Lida", value=f"{temperatura:.2f} °C")
+                    with m2:
+                        st.metric(label="Batimentos Cardíacos", value=f"{bpm} BPM")
+                    with m3:
+                        st.markdown(
+                            f'<div style="background-color: #1a1a1a; padding: 18px; border-radius: 5px; border: 2px solid {cor_alerta}; box-shadow: 0 0 15px {cor_alerta}; text-align: center;">'
+                            f'<span style="color: {cor_alerta}; font-weight: bold; font-family: monospace; font-size: 20px;">DIAGNÓSTICO: {diagnostico.upper()}</span>'
+                            f'</div>', 
+                            unsafe_allow_html=True
+                        )
+                    
+                    st.markdown("")
+                    
+                    # GRÁFICOS LADO A LADO BLINDADOS
+                    g1, g2 = st.columns(2)
+                    
+                    with g1:
+                        st.markdown("#### 🕸️ Assinatura Visual (Gráfico de Radar)")
+                        categories = list(probs.keys())
+                        values = list(probs.values())
+                        if categories and values:
+                            categories.append(categories[0])
+                            values.append(values[0])
+                            
+                            fig_radar = go.Figure()
+                            fig_radar.add_trace(go.Scatterpolar(
+                                r=values,
+                                theta=categories,
+                                fill='toself',
+                                fillcolor='rgba(0, 242, 254, 0.15)',
+                                line=dict(color='#00f2fe', width=2.5),
+                                name='Probabilidade'
+                            ))
+                            fig_radar.update_layout(
+                                polar=dict(
+                                    radialaxis=dict(visible=True, range=[0, 1], gridcolor="rgba(255,255,255,0.15)"),
+                                    angularaxis=dict(gridcolor="rgba(255,255,255,0.15)", linecolor="rgba(255,255,255,0.15)")
+                                ),
+                                template="plotly_dark",
+                                paper_bgcolor='rgba(0,0,0,0)',
+                                plot_bgcolor='rgba(0,0,0,0)',
+                                height=380
+                            )
+                            st.plotly_chart(fig_radar, width='stretch')
+                        else:
+                            st.warning("Dados de probabilidade insuficientes para gerar o gráfico radial.")
+                    
+                    with g2:
+                        st.markdown("#### 📊 Distribuição Linear (Gráfico de Barras)")
+                        classes_bar = list(probs.keys())
+                        valores_bar = list(probs.values())
+                        
+                        if classes_bar and valores_bar:
+                            fig_bar = go.Figure(data=[go.Bar(
+                                x=classes_bar, 
+                                y=valores_bar, 
+                                marker_color=['#00f2fe' if v == max(valores_bar) else '#343a40' for v in valores_bar],
+                                marker_line=dict(color='#4facfe', width=1.5)
+                            )])
+                            fig_bar.update_layout(
+                                template="plotly_dark",
+                                paper_bgcolor='rgba(0,0,0,0)',
+                                plot_bgcolor='rgba(0,0,0,0)',
+                                yaxis_range=[0, 1],
+                                height=380
+                            )
+                            st.plotly_chart(fig_bar, width='stretch')
+                        else:
+                            st.warning("Dados de classe insuficientes para gerar o gráfico de barras.")
+                else:
+                    st.error("⚠️ Resposta estrutural inválida recebida da API (Dados de probabilidade corrompidos).")
+            else:
+                st.error(f"❌ O cluster respondeu com erro de processamento HTTP {response.status_code}. Valide os contratos de dados.")
 
         except requests.exceptions.Timeout:
-            st.error("⏰ **Tempo de espera esgotado.** API acordando no Render. Aguarde e tente novamente.")
+            st.warning("⏳ **Cluster em Inicialização (Cold Start).** O Render demorou mais que 45 segundos para responder pois estava inativo. Aguarde 10 segundos e pressione o botão novamente para carregar os dados já aquecidos.")
         except requests.exceptions.ConnectionError:
-            st.error("❌ Erro de ligação com a API remota.")
+            st.error("🔌 **Falha de Link de Comunicação.** Não foi possível alcançar o barramento da API no Render. Verifique se o serviço do backend está ativo.")
         except Exception as e:
-            st.error(f"Erro inesperado: {str(e)}")
+            st.error(f"🛠️ **Exceção de Runtime Interceptada:** {str(e)}")
 
 # --- 8. HISTÓRICO DE CONSULTAS ---
 if st.session_state.historico:
     st.markdown("---")
     st.markdown("### 📋 Histórico de Análises Acumuladas nesta Sessão")
     df_hist = pd.DataFrame(st.session_state.historico)
-    st.dataframe(df_hist, use_container_width=True)
+    st.dataframe(df_hist, width='stretch')
 
 # --- RODAPÉ ---
 st.markdown("---")
-# AJUSTE 3: Aplicando a classe azul neon no rodapé principal da página
 st.markdown('<div class="neon-footer">Desenvolvido por Luiz F. N. Campelo • AI & ML Engineer</div>', unsafe_allow_html=True)
