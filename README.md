@@ -140,7 +140,7 @@ projeto-neuro-simbolico-saude/
 │   └── sensor_simulator.ino         # Código-fonte em C++ para simulação do ESP32
 ├── assets/
 │   ├── interface-teste.png          # Ativos visuais dos testes no console
-│   ├── wokwi-simulacao.png          # Estrutura do circuito IoT e captura de amostras via barramento serial no Wokwi
+│   ├── wokwi-simulacao.png          # Circuito IoT e captura de amostras via barramento serial no Wokwi
 │   ├── interface-streamlit-1.png    # Ativos visuais do dashboard do Streamlit
 │   ├── interface-streamlit-2.png    # Ativos visuais do dashboard do Streamlit
 │   └── interface-streamlit-3.png    # Ativos visuais do dashboard do Streamlit
@@ -247,5 +247,24 @@ Com o objetivo de evoluir a maturidade de engenharia da aplicação para aproxim
 
 <img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/SabrinaOtoni/TEMPLATE-FIAP-GRAD-ON-IA">MODELO GIT FIAP</a> por <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://fiap.com.br">FIAP</a> está licenciado sobre <a href="http://creativecommons.org/licenses/by/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution 4.0 International</a>.</p>
 
+Desenvolvido por **Luiz Frederico Nunes Campelo**
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Luiz%20Campelo-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/luizfncampelo/)
+[![GitHub](https://img.shields.io/badge/GitHub-Luiz--Frederico-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Luiz-Frederico)
+
+<br/>
+
+*Sistema de Monitoramento de Saúde · Projeto de IA Neuro-Simbólica*
+
+<br/>
+
+*Este projeto é para fins educacionais e de pesquisa.*
+*Não substitui diagnóstico médico profissional.*
+
+<br/>
+
+⭐ Se este projeto foi útil, deixa uma estrela no repositório!
+
+</div>
 
 
